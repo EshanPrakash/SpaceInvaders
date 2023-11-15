@@ -1,2 +1,2 @@
 # SpaceInvaders
-A Space Invaders (Galaga) project in collaboration with Zane Derrod
+A Space Invaders project in collaboration with Zane Derrod
