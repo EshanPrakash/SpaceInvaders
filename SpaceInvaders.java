@@ -121,7 +121,10 @@ public class SpaceInvaders extends JPanel implements ActionListener, KeyListener
     int currentInvaderIndex = -1;
     ArrayList<SpaceInvader> invaderList = new ArrayList<>();
 
-
+    private WinScreen Winscreen;
+    private LoseScreen Losescreen;
+    boolean playerwin = false;
+    boolean playerlose = false;
 
     Random rand = new Random();
 
@@ -137,6 +140,9 @@ public class SpaceInvaders extends JPanel implements ActionListener, KeyListener
         this.canvasHeight = 400;
         this.backgroundColor = Color.BLACK;
         setPreferredSize(new Dimension(this.canvasWidth, this.canvasHeight));
+
+        this.Winscreen = new WinScreen(0, 0, 600, 400, Color.GREEN);
+        this.Losescreen = new LoseScreen(0, 0, 600, 400, Color.RED);
 
         // set the drawing timer
         this.timer = new Timer(msPerFrame, this);
@@ -586,15 +592,15 @@ public class SpaceInvaders extends JPanel implements ActionListener, KeyListener
         // you can leave this function empty
         if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyChar() == 'a') {
             // FIXME what happens when left arrow is pressed
-            System.out.println("Left Arrow Released!");
+            //System.out.println("Left Arrow Released!");
             Spaceship.speed_x = 0;
         } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyChar() == 'd') {
             // FIXME what happens when right arrow is pressed
-            System.out.println("Right Arrow Released!");
+            //System.out.println("Right Arrow Released!");
             Spaceship.speed_x = 0;
         } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             // FIXME what happens when space bar is pressed
-            System.out.println("Space Bar Released!");
+            //System.out.println("Space Bar Released!");
         }
     }
 
@@ -736,11 +742,26 @@ public class SpaceInvaders extends JPanel implements ActionListener, KeyListener
             inv.update(600, 400, frame);
             inv.x += inv.speed_x;
             inv.y += inv.speed_y;
+
+        }
+
+        for (SpaceInvader inv : invaderList) {
             //If an alien touches the player, the player loses.
             //If an alien gets past the bottom of the screen, the player loses.
             if (inv.x >= Spaceship.x && inv.x <= Spaceship.x +23 && inv.y >= Spaceship.y || inv.y >= Spaceship.y + 24) {
-                System.out.println("game over");
+                //System.out.println("game over");
+                playerlose =true;
             }
+        }
+        //If an alien-fired projectile touches the player, the player loses.
+        if (InvaderBullet1.x >= Spaceship.x && InvaderBullet1.x + 4 <= Spaceship.x +23 && InvaderBullet1.y > Spaceship.y && InvaderBullet1.y < Spaceship.y + 10
+                || InvaderBullet2.x >= Spaceship.x && InvaderBullet2.x + 4 <= Spaceship.x +23 && InvaderBullet2.y > Spaceship.y && InvaderBullet2.y < Spaceship.y + 10
+                || InvaderBullet3.x >= Spaceship.x && InvaderBullet3.x + 4 <= Spaceship.x +23 && InvaderBullet3.y > Spaceship.y && InvaderBullet3.y < Spaceship.y + 10
+                || InvaderBullet4.x >= Spaceship.x && InvaderBullet4.x + 4 <= Spaceship.x +23 && InvaderBullet4.y > Spaceship.y && InvaderBullet4.y < Spaceship.y + 10
+                || InvaderBullet5.x >= Spaceship.x && InvaderBullet5.x + 4 <= Spaceship.x +23 && InvaderBullet5.y > Spaceship.y && InvaderBullet5.y < Spaceship.y + 10
+        ) {
+            //System.out.println("game over");
+            playerlose = true;
         }
 
         for (SpaceshipBullet bullet: bulletList) {
@@ -759,10 +780,7 @@ public class SpaceInvaders extends JPanel implements ActionListener, KeyListener
             }
         }
 
-        //If all aliens are destroyed, the player wins.
-        if (invaderList.isEmpty()) {
-            System.out.println("you win!");
-        }
+
 
         if (currentInvaderIndex != -1) {
             invaderList.remove(currentInvaderIndex);
@@ -776,7 +794,7 @@ public class SpaceInvaders extends JPanel implements ActionListener, KeyListener
             int randomIndex2 = rand.nextInt(invaderList.size());
             int randomIndex3 = rand.nextInt(invaderList.size());
             int randomIndex4 = rand.nextInt(invaderList.size());
-            System.out.println(randomIndex);
+            //System.out.println(randomIndex);
             SpaceInvader nthObject = invaderList.get(randomIndex);
             SpaceInvader nthObject1 = invaderList.get(randomIndex1);
             SpaceInvader nthObject2 = invaderList.get(randomIndex2);
@@ -810,14 +828,9 @@ public class SpaceInvaders extends JPanel implements ActionListener, KeyListener
             InvaderBullet5.speed_y = 3;
         }
 
-        //If an alien-fired projectile touches the player, the player loses.
-        if (InvaderBullet1.x >= Spaceship.x && InvaderBullet1.x + 4 <= Spaceship.x +23 && InvaderBullet1.y > Spaceship.y && InvaderBullet1.y < Spaceship.y + 10
-        || InvaderBullet2.x >= Spaceship.x && InvaderBullet2.x + 4 <= Spaceship.x +23 && InvaderBullet2.y > Spaceship.y && InvaderBullet2.y < Spaceship.y + 10
-        || InvaderBullet3.x >= Spaceship.x && InvaderBullet3.x + 4 <= Spaceship.x +23 && InvaderBullet3.y > Spaceship.y && InvaderBullet3.y < Spaceship.y + 10
-        || InvaderBullet4.x >= Spaceship.x && InvaderBullet4.x + 4 <= Spaceship.x +23 && InvaderBullet4.y > Spaceship.y && InvaderBullet4.y < Spaceship.y + 10
-        || InvaderBullet5.x >= Spaceship.x && InvaderBullet5.x + 4 <= Spaceship.x +23 && InvaderBullet5.y > Spaceship.y && InvaderBullet5.y < Spaceship.y + 10
-        ) {
-            System.out.println("game over");
+        if (invaderList.isEmpty()) {
+            //System.out.println("you win!");
+            playerwin = true;
         }
 
 
@@ -831,7 +844,13 @@ public class SpaceInvaders extends JPanel implements ActionListener, KeyListener
      * @returns  true if the player has lost, false otherwise
      */
     private boolean hasLostGame() {
+
+        if (playerlose) {
+            return true;
+        }
+
         return false; // FIXME delete this when ready
+
     }
 
     /* Check if the player has won the game
@@ -839,6 +858,10 @@ public class SpaceInvaders extends JPanel implements ActionListener, KeyListener
      * @returns  true if the player has won, false otherwise
      */
     private boolean hasWonGame() {
+        //If all aliens are destroyed, the player wins.
+        if (playerwin) {
+            return true;
+        }
         return false; // FIXME delete this when ready
     }
 
@@ -893,6 +916,8 @@ public class SpaceInvaders extends JPanel implements ActionListener, KeyListener
      */
     private void paintWinScreen(Graphics g) {
         // FIXME draw the win screen here
+        clearCanvas(g);
+        Winscreen.draw(g);
     }
 
     /* Paint the screen when the player has lost
@@ -901,7 +926,8 @@ public class SpaceInvaders extends JPanel implements ActionListener, KeyListener
      */
     private void paintLoseScreen(Graphics g) {
         // FIXME draw the game over screen here
-
+        clearCanvas(g);
+        Losescreen.draw(g);
     }
 
     public static void main(String[] args) {
